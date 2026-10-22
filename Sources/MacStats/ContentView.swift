@@ -77,9 +77,33 @@ struct GlassCard<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
+#if compiler(>=6.2)
+        if #available(macOS 26, *) {
+            content
+                .padding(padding)
+                .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        } else {
+            fallback
+        }
+#else
+        fallback
+#endif
+    }
+
+    private var fallback: some View {
         content
             .padding(padding)
-            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(.white.opacity(0.08))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .strokeBorder(
+                        LinearGradient(colors: [.white.opacity(0.3), .white.opacity(0.05)], startPoint: .top, endPoint: .bottom),
+                        lineWidth: 0.75
+                    )
+            )
     }
 }
 
