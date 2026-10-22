@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: NSPanel!
     private let stats = SystemStats()
     private let loginItem = LoginItemManager()
+    private let storageState = StorageState()
     private var eventMonitor: Any?
     private var hotkeyMonitor: Any?
     private var cancellables = Set<AnyCancellable>()
@@ -43,7 +44,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func setupPanel() {
-        let hosting = NSHostingController(rootView: ContentView(stats: stats, loginItem: loginItem))
+        let hosting = NSHostingController(rootView: ContentView(stats: stats, loginItem: loginItem, storageState: storageState))
         hosting.view.frame = NSRect(origin: .zero, size: panelSize)
 
         panel = NSPanel(

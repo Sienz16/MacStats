@@ -348,9 +348,15 @@ struct VolumeRow: View {
     }
 }
 
+enum PanelTab {
+    case monitor, storage
+}
+
 struct ContentView: View {
     @ObservedObject var stats: SystemStats
     @ObservedObject var loginItem: LoginItemManager
+    @ObservedObject var storageState: StorageState
+    @State private var selectedTab: PanelTab = .monitor
 
     private func fmt(_ v: Double) -> String {
         String(format: "%.1f", v)
@@ -427,6 +433,16 @@ struct ContentView: View {
                 }
             }
 
+            Picker("", selection: $selectedTab) {
+                Text("Monitor").tag(PanelTab.monitor)
+                Text("Storage").tag(PanelTab.storage)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+
+            if selectedTab == .storage {
+                StorageView(state: storageState)
+            } else {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 10) {
                     GlassCard(padding: 18) {
@@ -562,6 +578,7 @@ struct ContentView: View {
                         }
                     }
                 }
+            }
             }
 
             HStack {
